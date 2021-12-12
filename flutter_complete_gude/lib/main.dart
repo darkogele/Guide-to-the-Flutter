@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'quiz.dart';
+import 'result.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -10,47 +13,68 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _questionIndex = 0;
-
-  var questions = [
-    'what\'s your favorite color?',
-    'What\'s your favorite animal'
+  static const _questions = [
+    {
+      'questionText': 'What\'s your favorite color?',
+      'answers': [
+        {'text': 'Black', 'score': 10},
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 3},
+        {'text': 'White', 'score': 1},
+      ]
+    },
+    {
+      'questionText': 'What\'s your favorite animal?',
+      'answers': [
+        {'text': 'Rabbit', 'score': 3},
+        {'text': 'Snake', 'score': 11},
+        {'text': 'Elephant', 'score': 5},
+        {'text': 'Lion', 'score': 9},
+      ]
+    },
+    {
+      'questionText': 'Who\'s your favorite instructor?',
+      'answers': [
+        {'text': 'Max', 'score': 20},
+        {'text': 'Darko', 'score': 1},
+        {'text': 'Blagoja', 'score': 10},
+      ]
+    },
   ];
 
-  void _anwserQuestion() {
+  var _questionIndex = 0;
+  var _totalScore = 0;
+
+  void _resetQuiz() {
     setState(() {
-      _questionIndex = _questionIndex + 1;
+      _questionIndex = 0;
+      _totalScore = 0;
     });
-    print(_questionIndex);
+  }
+
+  void _anwserQuestion(int score) {
+    if (_questionIndex < _questions.length) {}
+
+    _totalScore += score;
+
+    setState(() {
+      _questionIndex += 1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Darko First App'),
-        ),
-        body: Column(
-          children: [
-            Text(questions[_questionIndex]),
-            RaisedButton(
-              child: const Text('Answer 1'),
-              onPressed: _anwserQuestion,
-            ),
-            RaisedButton(
-              child: const Text('Answer 2'),
-              onPressed: () => print('Answer 2 chosen!'),
-            ),
-            RaisedButton(
-              child: const Text('Answer 3'),
-              onPressed: () {
-                print('Answer 3 chosen!');
-              },
-            )
-          ],
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Darko First App'),
+          ),
+          body: _questionIndex < _questions.length
+              ? Quiz(
+                  questions: _questions,
+                  anwserQuestion: _anwserQuestion,
+                  questionIndex: _questionIndex)
+              : Result(_totalScore, _resetQuiz)),
     );
   }
 }
