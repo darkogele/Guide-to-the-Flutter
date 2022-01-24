@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
+        errorColor: Colors.red,
         appBarTheme: const AppBarTheme(
             titleTextStyle: TextStyle(
                 fontFamily: 'OpenSans',
@@ -27,6 +28,15 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'OpenSans',
                 fontSize: 18,
                 fontWeight: FontWeight.bold)),
+        textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+                primary: Colors.purple,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold))),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+                primary: Colors.purple,
+                onPrimary: Colors.white,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold))),
       ),
       home: const MyHomePage(),
     );
@@ -63,11 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
       title: txTitle,
       amount: txAmount,
-      date: DateTime.now(),
+      date: chosenDate,
       id: DateTime.now().toString(),
     );
 
@@ -87,6 +98,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  void _deleteTransction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Chart(_recentTransactions),
-          TransactionList(_userTransactions)
+          Expanded(child: TransactionList(_userTransactions, _deleteTransction))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
